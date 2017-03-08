@@ -1,2 +1,2 @@
 # DesignPatterns
-Ejemplos de POO con patrones de diseño
+Ejemplos de POO en java con patrones de diseño.
