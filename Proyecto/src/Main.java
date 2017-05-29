@@ -22,6 +22,7 @@
   biblioteca1.setDireccionBiblioteca("Independia 768");
   System.out.println("La dirección de la biblioteca es " + biblioteca1.getDireccionBiblioteca());
   
+<<<<<<< HEAD
   BookComponent libro1 =
                 new Coleccion("Libros de Gabriel Garcia Marquez", "Estos son los libros de Gabriel Garcia Marquez");
         
@@ -54,6 +55,8 @@
 
         //bibliotecario.printLibrary();
   
+=======
+>>>>>>> b630b095ecd2682a7c3442343674d3ccf3277ae6
   
  }
 }
