@@ -67,6 +67,9 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         emf=Persistence.createEntityManagerFactory("citasMedicasPU");
+        
+        //String id=request.getParameter(id);
+        
         CitasJpaController cc = new CitasJpaController(utx, emf);
         
         List <Citas> citas = cc.findCitasEntities();
