@@ -5,6 +5,7 @@ import java.util.*;
 public abstract class BookComponent {
     int numElementos;
     double costoTotal;
+    ComportamientoPrestar comportamientoPrestar;
 
     public int getNumElementos(){
         return numElementos;
@@ -31,10 +32,6 @@ public abstract class BookComponent {
     }
 
     public double getPrice() {
-        throw new UnsupportedOperationException();
-    }
-
-    public boolean isVegetarian() {
         throw new UnsupportedOperationException();
     }
 

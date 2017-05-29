@@ -19,7 +19,7 @@ public class DecoradorDerivada extends PolinomioDecorador{
     @Override
     public void mostrar(){
         p.mostrar();
-        System.out.println("Agregando la derivada por el decorador...");
+        System.out.println("\nAgregando la derivada por el decorador...\n");
         System.out.println(derivarPolinomio());
     }
     

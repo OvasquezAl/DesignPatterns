@@ -1,14 +1,14 @@
  
  
  
-public class Waitress {
+public class Bibliotecario {
     private BookComponent allMenus;
 
-    public Waitress(BookComponent allMenus) {
+    public Bibliotecario(BookComponent allMenus) {
         this.allMenus = allMenus;
     }
 
-    public void printMenu() {
+    public void printLibrary() {
         allMenus.print();
     }
 }

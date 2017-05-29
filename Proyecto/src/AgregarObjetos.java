@@ -6,7 +6,7 @@ public class AgregarObjetos {
         BookComponent libro1 =
                 new Coleccion("Libros de Gabriel Garcia Marquez", "Estos son los libros de Gabriel Garcia Marquez");
         
-        BookComponent allMenus = new Coleccion("Bienvenido", "Lista de articulos vendidos"); 
+        BookComponent allBooks = new Coleccion("Bienvenido", "Lista de articulos vendidos"); 
         
         libro1.add(new ArticuloItem(
                 "100 años de Soledad",
@@ -24,10 +24,10 @@ public class AgregarObjetos {
                 100.00, 
                 2));  
                 
-        allMenus.add(libro1); 
+        allBooks.add(libro1); 
         
-        Waitress waitress = new Waitress(allMenus);
+        Bibliotecario bibliotecario = new Bibliotecario(allBooks);
 
-        waitress.printMenu();
+        bibliotecario.printLibrary();
     }
 }

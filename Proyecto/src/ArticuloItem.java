@@ -25,6 +25,7 @@ public class ArticuloItem extends BookComponent {
         this.preciolibro=preciolibro;
         this.numeroLibros=numeroLibros; 
         this.costoTotal=numeroLibros*preciolibro;
+        this.comportamientoPrestar=new PrestarDefault();
     }
 
     public String getNombre() {

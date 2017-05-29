@@ -19,7 +19,7 @@ public class Test {
         
         Polinomio ps=new PolinomioSimple(3,2,4);
         ps.mostrar();
-        System.out.println(ps.evaluar(1));
+        System.out.println("Evaluando con x=5"+ps.evaluar(5)+"\n");
         
         Polinomio derivada=new DecoradorDerivada(ps);
         derivada.mostrar();
