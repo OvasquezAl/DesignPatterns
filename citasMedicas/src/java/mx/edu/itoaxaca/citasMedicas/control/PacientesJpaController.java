@@ -144,6 +144,15 @@ public class PacientesJpaController implements Serializable {
             em.close();
         }
     }
+    
+    public Pacientes findPacientesByName(String name) {//metodo creado por omar, no verificado
+        EntityManager em = getEntityManager();
+        try {
+            return em.find(Pacientes.class, name);
+        } finally {
+            em.close();
+        }
+    }
 
     public int getPacientesCount() {
         EntityManager em = getEntityManager();
