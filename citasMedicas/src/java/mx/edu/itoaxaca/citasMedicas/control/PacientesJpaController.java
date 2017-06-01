@@ -6,6 +6,7 @@
 package mx.edu.itoaxaca.citasMedicas.control;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -145,14 +146,20 @@ public class PacientesJpaController implements Serializable {
         }
     }
     
-    public Pacientes findPacientesByName(String name) {//metodo creado por omar, no verificado
+    public List findPacientesByName(String name) {//metodo creado por omar, no verificado
         EntityManager em = getEntityManager();
         try {
-            return em.find(Pacientes.class, name);
+            return em.createQuery(
+                    "SELECT p FROM Pacientes p WHERE p.nombre = :name")
+                    .setParameter("name", name)
+                    .getResultList();
         } finally {
             em.close();
         }
     }
+    
+    
+    
 
     public int getPacientesCount() {
         EntityManager em = getEntityManager();

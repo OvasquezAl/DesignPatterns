@@ -7,14 +7,15 @@ package mx.edu.itoaxaca.citasMedicas.control;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Vector;
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
@@ -50,35 +51,49 @@ UserTransaction utx;
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-public static Calendar dateToCalendar(Date date ) 
-{ 
- Calendar cal = new GregorianCalendar();
- try {   
-     cal.setTime(date);
-  }
-  catch (Exception e)
-  {
-      System.out.println("Exception :"+e);  
-  }  
-  return cal;
- }
+
 
 protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         emf=Persistence.createEntityManagerFactory("citasMedicasPU");
         
-        int id=0;
-        String nombre=request.getParameter("idPac");
-        if (nombre!=null) id=Integer.parseInt(nombre);
+        String nombre=request.getParameter("nombrePac");
+        System.out.println(nombre);
+        /*String query = 
+         "SELECT * FROM OMAR.PACIENTES WHERE NOMBRE = '"+ nombre +"' ";
+        //String nombre=request.getParameter("nombrePac");
+        
+        EntityManager em = emf.createEntityManager();
+        ArrayList listaPacientes = (ArrayList)em.createNativeQuery(query).getResultList();
+        System.out.println("******************* consulta realizada");
+        Pacientes p=(Pacientes)listaPacientes.get(0);
+        System.out.println(p.getIdpaciente());
+             //System.out.println(listaPacientes.get(0)[0]);
+/*             System.out.println(listaPacientes.get(0)[1]);
+             System.out.println(listaPacientes.get(0)[2]);
+             System.out.println(listaPacientes.get(0)[3]);
+             System.out.println(listaPacientes.get(0)[4]);*/
+        
+        
+        
         PacientesJpaController cp=new PacientesJpaController(utx, emf);
+        CitasJpaController cc=new CitasJpaController(utx, emf);
         
+       Vector p =(Vector)cp.findPacientesByName(nombre);
         
+        //
+        System.out.println("Consulta hecha");
+        System.out.println(p.size());
+        System.out.println(p.get(0));
+        Pacientes pac=(Pacientes)p.get(0);
+        Vector citas = (Vector)cc.findCitasByIdPaciente(pac.getIdpaciente());
+        System.out.println("Consulta hecha");
+        System.out.println(p.size());
+        System.out.println(p.get(0));
         
-        
-        CitasJpaController cc = new CitasJpaController(utx, emf);
-        
-        List <Citas> citas = cc.findCitasEntities();
+    //System.out.println(id);
+    //List pacientes=cp.findPacientesByName(nombre);
         
         
         try (PrintWriter out = response.getWriter()) {
@@ -89,27 +104,33 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
             out.println("<title>Servlet VerCitas</title>");            
             out.println("</head>");
             out.println("<body>");
+            
+            out.println("<h3>Citas de: "+pac.getIdpaciente()+"\t "+pac.getNombre()+"</h3>");
             out.println("<table border=1 >");
-            out.println("<tbody>");
-                out.println("<tr>");
-                out.println("<td>id</td>");
-                out.println("<td>Paciente</td>");
-                out.println("<td>Fecha</td>");
-                out.println("<td>Hora</td>");
-                out.println("</tr>");
-            for(Citas cita:citas){
-                if(cita.getPaciente()==id ){
-                Calendar f=dateToCalendar(cita.getFecha());
-                Calendar h=dateToCalendar(cita.getHora());
-                out.println("<tr>");
-                out.println("<td>"+cita.getIdcita()+"</td>");
-                out.println("<td>"+cita.getPaciente()+"</td>");
-                
-                out.println("<td>"+f.get(Calendar.DAY_OF_MONTH)+"-"+(dateToCalendar(cita.getFecha()).get(Calendar.MONTH)+1)+"</td>");
-                out.println("<td>"+h.get(Calendar.HOUR_OF_DAY)+":00</td>");
-                out.println("</tr>");
-                }
-            }
+            out.println("<tr><td class='datos'>ID</td>"
+                 +"<td class='datos'>Fecha</td>"
+                    +"<td class='datos'>Hora</td>"
+                    +"<td class='datos'>IdPaciente</td>"
+                    +"<td class='datos'>Nombre</td>"
+                    +"<td class='datos'>Opciones</td>"
+                 +"</tr>"
+                 );
+            
+             for(int i = 0; i < citas.size(); i++){
+                 Citas c=(Citas)citas.get(i);
+                 out.println(
+                     "<tr>"
+                             + "<td>"+c.getIdcita()+"</td>"
+                             + "<td>"+c.getFecha()+"</td>"
+                             + "<td>"+c.getHora()+"</td>"
+                             + "<td>"+c.getPaciente()+"</td>"
+                             + "<td>"+nombre+"</td>"
+                             + "<td><a href=\"EditarCita?id="+c.getIdcita()+"&paciente="+c.getPaciente()+"\">Atender</a></td>"
+                    
+                             + "</tr>"
+                 );
+             }
+            
             out.println("</tbody>");
             out.println("</table>");
             

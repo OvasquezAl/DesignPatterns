@@ -113,7 +113,7 @@ UserTransaction utx;
                }else {
                boolean yahay=false;
                   for(Citas cita:citas){
-                   if(VerCitas.dateToCalendar(cita.getFecha()).get(Calendar.DAY_OF_MONTH)==i && VerCitas.dateToCalendar(cita.getFecha()).get(Calendar.MONTH)+1==inicio.getMonthValue()){
+                   if(ListaPacientes.DateToCalendar(cita.getFecha()).get(Calendar.DAY_OF_MONTH)==i && ListaPacientes.DateToCalendar(cita.getFecha()).get(Calendar.MONTH)+1==inicio.getMonthValue()){
                         yahay=true;
                    }
                }
