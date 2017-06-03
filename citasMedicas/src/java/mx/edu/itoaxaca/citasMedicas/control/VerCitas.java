@@ -124,11 +124,15 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
                              + "<td>"+c.getFecha()+"</td>"
                              + "<td>"+c.getHora()+"</td>"
                              + "<td>"+c.getPaciente()+"</td>"
-                             + "<td>"+nombre+"</td>"
-                             + "<td><a href=\"EditarCita?id="+c.getIdcita()+"&paciente="+c.getPaciente()+"\">Atender</a></td>"
-                    
-                             + "</tr>"
-                 );
+                             + "<td>"+nombre+"</td>");
+if(c.getEstatus().equals("PENDIENTE")){                                     
+                 out.println("<td><a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"\">Atender</a></td>");
+                                     }
+if(c.getEstatus().equals("ATENDIDA")){
+                 out.println("<td><a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&diagnostico=x\">Ver</a></td>");
+}
+                 out.println("</tr>");
+                 
              }
             
             out.println("</tbody>");

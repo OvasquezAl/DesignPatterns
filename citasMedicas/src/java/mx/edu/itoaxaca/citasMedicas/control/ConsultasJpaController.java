@@ -144,7 +144,20 @@ public class ConsultasJpaController implements Serializable {
             em.close();
         }
     }
-
+    
+      public List findConsultasByIdCita(Integer idcita) {
+        EntityManager em = getEntityManager();
+        try {
+           return em.createQuery(
+                    "SELECT c FROM Consultas c WHERE c.idcita = :idcita")
+                    .setParameter("idcita", idcita)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+      
+    
     public int getConsultasCount() {
         EntityManager em = getEntityManager();
         try {

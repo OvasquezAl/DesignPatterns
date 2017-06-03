@@ -7,6 +7,10 @@ package mx.edu.itoaxaca.citasMedicas.control;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -16,7 +20,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+import mx.edu.itoaxaca.citasMedicas.control.exceptions.RollbackFailureException;
 import mx.edu.itoaxaca.citasMedicas.modelo.Citas;
+import mx.edu.itoaxaca.citasMedicas.modelo.Consultas;
 
 /**
  *
@@ -46,15 +52,58 @@ UserTransaction utx;
         
         ConsultasJpaController con=new ConsultasJpaController(utx, emf);
         CitasJpaController cc=new CitasJpaController(utx, emf);
+        PacientesJpaController cp=new PacientesJpaController(utx, emf);
         
         String ids=request.getParameter("idCita");
         System.out.println(ids);
-        
         int idCita = Integer.parseInt(request.getParameter("idCita"));
         int idPaciente = Integer.parseInt(request.getParameter("paciente"));
         String paciente=request.getParameter("paciente");
+        String nombrePaciente=cp.findPacientes(Integer.parseInt(paciente)).getNombre();
+        
+        String diagnostico=request.getParameter("diagnostico");
         System.out.println(paciente);
-        Citas cita = cc.findCitas(idCita);
+        
+        if(diagnostico!=null){
+            if(diagnostico.equals("x")){
+            
+            Vector consultas=(Vector)con.findConsultasByIdCita(idCita);
+            System.out.println("búsqueda de consulta por id cita");
+            System.out.println("tamaño del vector::::::::::::::::::::::::::::::::::::::::"+consultas.size());
+            Consultas c=(Consultas)consultas.get(0);
+            System.out.println("Diagnostico: "+c.getDiagnostico());
+            diagnostico=c.getDiagnostico();
+                
+                
+            
+            }else{
+            Citas cita = cc.findCitas(idCita);
+            cita.setEstatus("ATENDIDA");
+            try {
+                cc.edit(cita);
+                
+            } catch (RollbackFailureException ex) {
+                Logger.getLogger(EditarCita.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(EditarCita.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                
+            Consultas consulta =new Consultas();
+            consulta.setIdcita(idCita);
+            consulta.setIdpaciente(idPaciente);
+            consulta.setDiagnostico(diagnostico);
+            try {
+                con.create(consulta);
+            } catch (Exception ex) {
+                Logger.getLogger(EditarCita.class.getName()).log(Level.SEVERE, null, ex);
+            }    
+            
+            }
+        }
+        
+        
+        
+        
         
         
         try (PrintWriter out = response.getWriter()) {
@@ -67,13 +116,21 @@ UserTransaction utx;
             out.println("<body>");
             out.println("<h1>Servlet EditarCita at " + request.getContextPath() + "</h1>");
             out.println("<form action='EditarCita' method='post'>");
-            out.println("<h1>IdCita:" + ids+ "</h1>");
-            out.println("<input type='hidden' value="+ids+">");
-            out.println("<h1>IdPaciente:" + ids+ "</h1>");
-            out.println("<input type='hidden' value="+paciente+">");
+            out.println("<h1>IdCita:" + idCita+ "</h1>");
+            
+            out.println("<h1>IdPaciente:" + paciente+ "</h1>");
+            out.println("<input type='hidden' name='paciente' value="+paciente+">");
+            out.println("<input type='hidden' name='idCita' value="+idCita+">");
             out.println("<p>Diagnóstico:</p>");
-            out.println("<input type='text' size=100>");
-            out.println("<input type='submit'></input>");
+            if(diagnostico==null){    
+            out.println("<input type='text' name='diagnostico' size=100>");
+            out.println("<input type='submit' value='Guardar'></input>");
+            }else{
+                
+            out.println("<p>"+diagnostico+"</p>");    
+            out.println("<a href='BuscarPorNombre'>Otra búsqueda</a>");
+            }
+            
             out.println("</form>");
             out.println("</body>");
             out.println("</html>");

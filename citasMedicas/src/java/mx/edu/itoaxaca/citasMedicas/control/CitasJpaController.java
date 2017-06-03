@@ -145,17 +145,20 @@ public class CitasJpaController implements Serializable {
         }
     }
     
-     public List findCitasByIdPaciente(Integer id) {
+      public List findCitasByIdPaciente(Integer paciente) {
         EntityManager em = getEntityManager();
         try {
-            return em.createQuery(
-                    "SELECT p FROM Citas p WHERE p.paciente = :id")
-                    .setParameter("id", id)
+           return em.createQuery(
+                    "SELECT c FROM Citas c WHERE c.paciente = :paciente")
+                    .setParameter("paciente", paciente)
                     .getResultList();
         } finally {
             em.close();
         }
     }
+      
+       
+      
 
     public int getCitasCount() {
         EntityManager em = getEntityManager();

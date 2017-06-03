@@ -18,6 +18,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -32,7 +33,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Citas.findByIdcita", query = "SELECT c FROM Citas c WHERE c.idcita = :idcita")
     , @NamedQuery(name = "Citas.findByFecha", query = "SELECT c FROM Citas c WHERE c.fecha = :fecha")
     , @NamedQuery(name = "Citas.findByHora", query = "SELECT c FROM Citas c WHERE c.hora = :hora")
-    , @NamedQuery(name = "Citas.findByPaciente", query = "SELECT c FROM Citas c WHERE c.paciente = :paciente")})
+    , @NamedQuery(name = "Citas.findByPaciente", query = "SELECT c FROM Citas c WHERE c.paciente = :paciente")
+    , @NamedQuery(name = "Citas.findByEstatus", query = "SELECT c FROM Citas c WHERE c.estatus = :estatus")})
 public class Citas implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -49,6 +51,9 @@ public class Citas implements Serializable {
     private Date hora;
     @Column(name = "PACIENTE")
     private Integer paciente;
+    @Size(max = 10)
+    @Column(name = "ESTATUS")
+    private String estatus;
 
     public Citas() {
     }
@@ -87,6 +92,14 @@ public class Citas implements Serializable {
 
     public void setPaciente(Integer paciente) {
         this.paciente = paciente;
+    }
+
+    public String getEstatus() {
+        return estatus;
+    }
+
+    public void setEstatus(String estatus) {
+        this.estatus = estatus;
     }
 
     @Override
