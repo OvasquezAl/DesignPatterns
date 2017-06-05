@@ -7,8 +7,8 @@ package mx.edu.itoaxaca.citasMedicas.control;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -60,22 +60,10 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         
         String nombre=request.getParameter("nombrePac");
         System.out.println(nombre);
-        /*String query = 
-         "SELECT * FROM OMAR.PACIENTES WHERE NOMBRE = '"+ nombre +"' ";
-        //String nombre=request.getParameter("nombrePac");
-        
-        EntityManager em = emf.createEntityManager();
-        ArrayList listaPacientes = (ArrayList)em.createNativeQuery(query).getResultList();
-        System.out.println("******************* consulta realizada");
-        Pacientes p=(Pacientes)listaPacientes.get(0);
-        System.out.println(p.getIdpaciente());
-             //System.out.println(listaPacientes.get(0)[0]);
-/*             System.out.println(listaPacientes.get(0)[1]);
-             System.out.println(listaPacientes.get(0)[2]);
-             System.out.println(listaPacientes.get(0)[3]);
-             System.out.println(listaPacientes.get(0)[4]);*/
         
         
+        Date hoy=Date.from(Instant.now());
+             
         
         PacientesJpaController cp=new PacientesJpaController(utx, emf);
         CitasJpaController cc=new CitasJpaController(utx, emf);
@@ -91,9 +79,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         System.out.println("Consulta hecha");
         System.out.println(p.size());
         System.out.println(p.get(0));
-        
-    //System.out.println(id);
-    //List pacientes=cp.findPacientesByName(nombre);
+
         
         
         try (PrintWriter out = response.getWriter()) {
@@ -104,8 +90,8 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
             out.println("<title>Servlet VerCitas</title>");            
             out.println("</head>");
             out.println("<body>");
-            
-            out.println("<h3>Citas de: "+pac.getIdpaciente()+"\t "+pac.getNombre()+"</h3>");
+            out.println("<center>");
+            out.println("<h3>Citas de: "+pac.getNombre()+"</h3>");
             out.println("<table border=1 >");
             out.println("<tr><td class='datos'>ID</td>"
                  +"<td class='datos'>Fecha</td>"
@@ -118,27 +104,44 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
             
              for(int i = 0; i < citas.size(); i++){
                  Citas c=(Citas)citas.get(i);
+                 Calendar f=ListaPacientes.dtc(c.getFecha());
+                 Calendar h=ListaPacientes.dtc(c.getFecha());
                  out.println(
                      "<tr>"
-                             + "<td>"+c.getIdcita()+"</td>"
-                             + "<td>"+c.getFecha()+"</td>"
-                             + "<td>"+c.getHora()+"</td>"
-                             + "<td>"+c.getPaciente()+"</td>"
-                             + "<td>"+nombre+"</td>");
-if(c.getEstatus().equals("PENDIENTE")){                                     
-                 out.println("<td><a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"\">Atender</a></td>");
-                                     }
-if(c.getEstatus().equals("ATENDIDA")){
-                 out.println("<td><a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&diagnostico=x\">Ver</a></td>");
-}
-                 out.println("</tr>");
-                 
+                    + "<td>"+c.getIdcita()+"</td>"
+                    + "<td>"+f.get(Calendar.DAY_OF_MONTH)+"-"+f.get(Calendar.MONTH)+1+"-"+f.get(Calendar.YEAR)+"</td>"
+                    + "<td>"+c.getHora().getHours()+":00</td>"
+                    + "<td>"+c.getPaciente()+"</td>"
+                    + "<td>"+nombre+"</td>");
+                    if(c.getEstatus().equals("PENDIENTE")){                                     
+                        if(c.getFecha().before(hoy)){
+                        out.println("<td>"
+                            + "<a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=diagnosticar\">Diagnosticar</a>"
+                            + ", <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=cancelar\">Cancelar</a>"        
+                            + " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
+                            + "</td>");
+                        }else{
+                            out.println("<td>"
+                            + "<a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=cancelar\">Cancelar</a>"        
+                            + " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
+                            + "</td>");
+                        }
+                    }       
+                    if(c.getEstatus().equals("ATENDIDA")){
+                        out.println("<td><a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&diagnostico=x&verbo=ver\">Ver</a>"
+                        + " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
+                        + "</td>");
+                    }
+                    if(c.getEstatus().equals("CANCELADA")){
+                        out.println("<td><a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&diagnostico=x&verbo=ver\">Ver</a></td>"
+                        + " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"\"&verbo=borrar>Borrar</a>"
+                        + "</td>");
+                    }
+                        out.println("</tr>");
              }
-            
             out.println("</tbody>");
             out.println("</table>");
-            
-            //out.println("<h1>Servlet VerCitas at " + request.getContextPath() + "</h1>");
+            out.println("</center>");
             out.println("</body>");
             out.println("</html>");
         }

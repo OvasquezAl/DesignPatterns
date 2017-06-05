@@ -30,7 +30,7 @@ import mx.edu.itoaxaca.citasMedicas.modelo.Pacientes;
  * @author omar
  */
 @WebServlet(name = "ElegirCita", urlPatterns = {"/ElegirCita"})
-public class ElegirCita extends HttpServlet {
+public class ElegirFechaCita extends HttpServlet {
 @PersistenceUnit
 EntityManagerFactory emf;
 @Resource
@@ -48,8 +48,7 @@ UserTransaction utx;
             throws ServletException, IOException {
         String diaSeleccionado=request.getParameter("diaSel");
         response.setContentType("text/html;charset=UTF-8");
-        emf=Persistence.createEntityManagerFactory("citasMedicasPU");
-        
+        emf=Persistence.createEntityManagerFactory("citasMedicasPU");        
         PacientesJpaController cp=new PacientesJpaController(utx, emf);
         CitasJpaController cc=new CitasJpaController(utx, emf);
         
@@ -64,7 +63,7 @@ UserTransaction utx;
         int dia=inicio.getDayOfMonth();
         Month mes=inicio.getMonth();
         int SizeMes=inicio.lengthOfMonth();
-        String fecha="";
+        String fecha;
         if(inicio.getMonthValue()<10){
          fecha=inicio.getYear()+"-0"+inicio.getMonthValue()+"-"+diaSeleccionado;
         }else{
@@ -89,49 +88,53 @@ UserTransaction utx;
             //out.println("<h3>Día de la semana: "+diaSemana+"</h3>");
             //out.println("<h3>Dia: "+dia+"</h3>");
             if(diaSeleccionado==null){
-            out.println("<h3>Mes: "+mes+"</h3>");
-            //out.println("<p>Inicio del mes: "+inicioMes+"</p>");
-            //out.println("<h3>Longitud del mes: "+SizeMes+"</h3>");
-            out.println("<table border=1>");
-            out.println("<tbody>");
-            out.println("<tr><td>L</td>");
-            out.println("<td>M</td>");
-            out.println("<td>M</td>");
-            out.println("<td>J</td>");
-            out.println("<td>V</td>");
-            out.println("<td>S</td>");
-            out.println("<td>D</td></tr>");
-            
-            out.println("<tr>");
-            
-            for(int i=1, d=inicioMes.getDayOfWeek().getValue();i<=SizeMes;d++,i++){
-                if(d==1 && i!=1){ 
-                    out.println("<tr>");
-                }   
-               if(i<d){
-                   out.println("<td></td>");
-               }else {
-               boolean yahay=false;
-                  for(Citas cita:citas){
-                   if(ListaPacientes.DateToCalendar(cita.getFecha()).get(Calendar.DAY_OF_MONTH)==i && ListaPacientes.DateToCalendar(cita.getFecha()).get(Calendar.MONTH)+1==inicio.getMonthValue()){
-                        yahay=true;
-                   }
-               }
-                if(i<dia || yahay){out.println("<td>"+i+"</td>");  }
-                else{
-                    
-                    out.println("<td><a href='ElegirCita?diaSel="+i+"&pacid="+id+"'>"+i+"</a></td>");
+                out.println("<h3>Mes: "+mes+"</h3>");
+                //out.println("<p>Inicio del mes: "+inicioMes+"</p>");
+                //out.println("<h3>Longitud del mes: "+SizeMes+"</h3>");
+                out.println("<center>");
+                out.println("<table border=1 padding=20>");
+                out.println("<tbody>");
+                out.println("<tr><td>L</td>");
+                out.println("<td>M</td>");
+                out.println("<td>M</td>");
+                out.println("<td>J</td>");
+                out.println("<td>V</td>");
+                out.println("<td>S</td>");
+                out.println("<td>D</td></tr>");
 
-               }
-            }  
-               if(d==7){ 
-                    out.println("</tr>");
-                    d=0;
+                out.println("<tr>");
+                int d;
+                for(d =1 ;d < inicioMes.getDayOfWeek().getValue();d++){
+                    out.println("<td></td>");
                 }
-            }
-            
-            out.println("</table>");
+                for(int i=1, s=d;i<=SizeMes;i++,s++){
+                    if(s==8){
+                    out.println("</tr><tr>");
+                    s=1;
+                    }
+                    
+                    boolean yahay=false;
+                      for(Citas cita:citas){
+                          //System.out.println(cita.getFecha());
+                          Calendar f=ListaPacientes.dtc(cita.getFecha());
+                       if(f.get(Calendar.DAY_OF_MONTH)==i ){
+                           System.out.println("coincidió: "+ i+ "con el día: "+f.get(Calendar.DAY_OF_MONTH));
+                            yahay=true;
+                       }
+                    }
+                      
+                   if(i<dia || yahay){
+                       System.out.println("Hoy es: "+dia);
+                       out.println("<td>"+i+"</td>");  
+                   }else{
+                        out.println("<td><a href='ElegirCita?diaSel="+i+"&pacid="+id+"'>"+i+"</a></td>");
+                   }
+                }
+                out.println("</tr>");
+                out.println("</table>");
+                out.println("</center>");
             }else{
+            out.println("Fecha de la cita: "+fecha);
             out.println("<form action='AltaCita' method='post'>");
             out.println("<input type='hidden' id='paciente' name='paciente' value="+id+"></input>");
             out.println("<input type='text' style='visibility: hidden' name='fecha' id='fecha' value="+fecha+">Dia seleccionado:"+fecha+"</input>");
@@ -144,7 +147,7 @@ UserTransaction utx;
             out.println("</form>");
         }
             out.println("</tbody>");
-            out.println(diaSeleccionado);
+
             out.println("</body>");
             out.println("</html>");
         }

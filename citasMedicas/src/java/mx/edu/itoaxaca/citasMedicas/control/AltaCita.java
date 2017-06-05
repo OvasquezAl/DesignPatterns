@@ -52,7 +52,7 @@ public class AltaCita extends HttpServlet {
         System.out.println(h);
         int paciente=Integer.parseInt(request.getParameter("paciente"));
         SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat t = new SimpleDateFormat("yyy-MM-dd HH:MM:SS");
+        SimpleDateFormat t = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
         
         
         Date hora= new Date();
@@ -69,6 +69,7 @@ public class AltaCita extends HttpServlet {
         cita.setPaciente(paciente);
         cita.setHora(hora);
         cita.setFecha(fecha);
+        cita.setEstatus("PENDIENTE");
         
         
         

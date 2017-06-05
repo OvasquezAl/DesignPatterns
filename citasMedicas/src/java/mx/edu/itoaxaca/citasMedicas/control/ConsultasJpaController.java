@@ -156,6 +156,18 @@ public class ConsultasJpaController implements Serializable {
             em.close();
         }
     }
+    public List findConsultasByPaciente(Integer idPaciente) {
+        EntityManager em = getEntityManager();
+        try {
+           return em.createQuery(
+                    "SELECT c FROM Consultas c WHERE c.idpaciente = :idpaciente")
+                    .setParameter("idpaciente", idPaciente)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+      
       
     
     public int getConsultasCount() {

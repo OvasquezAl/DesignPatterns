@@ -16,6 +16,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
@@ -38,10 +39,10 @@ import mx.edu.itoaxaca.citasMedicas.modelo.Pacientes;
 @WebServlet(name = "ListaPacientes", urlPatterns = {"/ListaPacientes"})
 public class ListaPacientes extends HttpServlet {
 
-  @PersistenceUnit
-    EntityManagerFactory emf;
-    @Resource 
-        UserTransaction utx;
+@PersistenceUnit
+EntityManagerFactory emf;
+@Resource 
+UserTransaction utx;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -51,22 +52,27 @@ public class ListaPacientes extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    public static Calendar DateToCalendar(Date date ) 
-{ 
- Calendar cal = null;
- try {   
-     DateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-  date = (Date)formatter.parse(date.toString()); 
-  cal=Calendar.getInstance();
-  cal.setTime(date);
-  }
-  catch (ParseException e)
-  {
-      System.out.println("Exception :"+e);  
-  }  
-  return cal;
+public static Calendar dateToCalendar(Date date ){ 
+    Calendar cal = null;
+    try {   
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        date = (Date)formatter.parse(date.toString()); 
+        cal=Calendar.getInstance();
+        cal.setTime(date);
+     }
+    catch (ParseException e) {
+        System.out.println("Exception :"+e);  
+     }  
+     return cal;
  }
     
+public static Calendar dtc(Date d){
+    
+    Calendar myCal = new GregorianCalendar();
+    myCal.setTime(d);
+    return myCal;
+}
+
     public int edad(Date fnac){
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate fechaNueva = fnac.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -92,7 +98,6 @@ public class ListaPacientes extends HttpServlet {
         
         
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -118,11 +123,7 @@ public class ListaPacientes extends HttpServlet {
             }
             
             out.println("<tr> <td class='datos'>Promedios</td><td class='datos'></td><td class='datos'></td><td class='datos'>"+estaturas/numPacientes+"</td><td class='datos'></td><td class='datos'>"+edades/numPacientes+"</td>");
-            
             out.println("</table>");
-            
-            //out.println("<h1>Servlet Mostrar at " + request.getContextPath() + "</h1>");
-            
             out.println("<a href='index.html'>Volver al inicio</a>");
             out.println("</body>");
             out.println("</html>");

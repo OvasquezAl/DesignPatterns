@@ -18,19 +18,24 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
-import mx.edu.itoaxaca.citasMedicas.modelo.Citas;
 import mx.edu.itoaxaca.citasMedicas.modelo.Pacientes;
 
 /**
  *
  * @author omar
  */
-@WebServlet(name = "BuscaCitas", urlPatterns = {"/BuscaCitas"})
-public class BuscaCitas extends HttpServlet {
- @PersistenceUnit
-    EntityManagerFactory emf;
-    @Resource 
-        UserTransaction utx;
+@WebServlet(name = "AgregarCita", urlPatterns = {"/AgregarCita"})
+public class ElegirPacienteCita extends HttpServlet {
+
+@PersistenceUnit
+EntityManagerFactory emf;
+
+@Resource
+UserTransaction utx;
+
+private CitasJpaController cc;
+private PacientesJpaController cp;
+            
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -43,12 +48,11 @@ public class BuscaCitas extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-         emf=Persistence.createEntityManagerFactory("citasMedicasPU");
-        CitasJpaController cc = new CitasJpaController(utx, emf);
         
-        List <Citas> citas = cc.findCitasEntities();
-       
-        String id=request.getParameter("id");
+        emf=Persistence.createEntityManagerFactory("citasMedicasPU");
+        cp = new PacientesJpaController(utx, emf);
+        
+        List<Pacientes> pacientes = cp.findPacientesEntities();
         
         
         try (PrintWriter out = response.getWriter()) {
@@ -56,10 +60,21 @@ public class BuscaCitas extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet BuscaCitas</title>");            
+            out.println("<title>Citas Medicas</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet BuscaCitas at " + request.getContextPath() + "</h1>");
+            out.println("<h2>Seleccion de paciente:</h2>");
+            
+            out.println("<form id='buscaPac' action='ElegirCita' method='post'> ");
+            out.println("<select name='pacid'>");
+            for (Pacientes paci:pacientes){
+                out.println("<option value="+paci.getIdpaciente()+" label="+paci.getNombre()+">");
+            }
+            out.println("</select>");
+            out.println("<br/>");
+            out.println("<input type='submit' id='idPaciente' value='Aceptar' name='aceptar' title='buscar'>");
+            out.println("</form>");
+            
             out.println("</body>");
             out.println("</html>");
         }

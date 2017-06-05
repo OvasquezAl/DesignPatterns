@@ -7,7 +7,7 @@ package mx.edu.itoaxaca.citasMedicas.control;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.Vector;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -18,15 +18,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+import mx.edu.itoaxaca.citasMedicas.modelo.Consultas;
 import mx.edu.itoaxaca.citasMedicas.modelo.Pacientes;
 
 /**
  *
  * @author omar
  */
-@WebServlet(name = "AgregarCita", urlPatterns = {"/AgregarCita"})
-public class AgregarCita extends HttpServlet {
-
+@WebServlet(name = "VerConsultas", urlPatterns = {"/VerConsultas"})
+public class VerConsultas extends HttpServlet {
 @PersistenceUnit
 EntityManagerFactory emf;
 
@@ -35,7 +35,7 @@ UserTransaction utx;
 
 private CitasJpaController cc;
 private PacientesJpaController cp;
-            
+private ConsultasJpaController con;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -48,11 +48,26 @@ private PacientesJpaController cp;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
         emf=Persistence.createEntityManagerFactory("citasMedicasPU");
-        cp = new PacientesJpaController(utx, emf);
-        
-        List<Pacientes> pacientes = cp.findPacientesEntities();
+        cc=new CitasJpaController(utx, emf);
+        cp=new PacientesJpaController(utx, emf);
+        con=new ConsultasJpaController(utx, emf);
+        String nombre=request.getParameter("nombre");
+        System.out.println("Nombre recibido: "+nombre);
+        Pacientes paciente=null;
+        Vector consultas=null;
+        if(nombre != null){
+            Vector pacientes=(Vector)cp.findPacientesByName(nombre);
+            try{
+                paciente= (Pacientes) pacientes.get(0);
+                consultas=(Vector)con.findConsultasByPaciente(paciente.getIdpaciente());
+                
+            }catch(Exception e){
+                System.out.println("No se encontró ningun paciente: "+ e);
+            }
+            
+        }
+       
         
         
         try (PrintWriter out = response.getWriter()) {
@@ -60,21 +75,35 @@ private PacientesJpaController cp;
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Citas Medicas</title>");            
+            out.println("<title>Servlet VerConsultas</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h2>Seleccion de paciente:</h2>");
-            
-            out.println("<form id='buscaPac' action='ElegirCita' method='post'> ");
-            out.println("<select name='pacid'>");
-            for (Pacientes paci:pacientes){
-                out.println("<option value="+paci.getIdpaciente()+" label="+paci.getNombre()+">");
-            }
-            out.println("</select>");
-            out.println("<br/>");
-            out.println("<input type='submit' id='idPaciente' value='Aceptar' name='aceptar' title='buscar'>");
+            out.println("<center>");
+            out.println("<p></p><p></p>");
+            //out.println("<h1>Servlet VerConsultas at " + request.getContextPath() + "</h1>");
+            out.println("<h3 color='red'>Ver Consultas</h3>");
+            out.println("<form id='datos' action='VerConsultas' method='post'>");
+            out.println("<input type='text' name='nombre' id='InputNombre'>");
+          //  out.println("<input type='select' name='tipo' id='selectTipo'>");
+            out.println("<input type='submit' value='Buscar'>");
             out.println("</form>");
-            
+            out.println("<p></p><p></p>");
+            if(consultas.size()>0 ){
+                out.println("<table border=1>");
+                out.println("<tr><td>Paciente</td><td>Cita</td><td>Consulta</td><td>Diagnostico</td></tr>");
+                for(int i=0; i<consultas.size();i++){
+                    Consultas consulta =(Consultas)consultas.get(i);
+                    out.println("<tr><td>"+paciente.getNombre()+"</td>"
+                            +"<td>"+consulta.getIdcita()+"</td>"
+                            + "<td>"+consulta.getIdconsulta()+"</td>"
+                            +"<td>"+consulta.getDiagnostico()+"</td></tr>");   
+                }
+                out.println("</table>");
+            }else{
+                if(paciente !=null ) out.println("<h4>No hay consultas para este paciente</h4>");
+            }
+            out.println("<a href='/citasMedicas/'>Inicio</a>");
+            out.println("<center>");
             out.println("</body>");
             out.println("</html>");
         }

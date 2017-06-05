@@ -53,7 +53,7 @@ UserTransaction utx;
         ConsultasJpaController con=new ConsultasJpaController(utx, emf);
         CitasJpaController cc=new CitasJpaController(utx, emf);
         PacientesJpaController cp=new PacientesJpaController(utx, emf);
-        
+        String verbo=request.getParameter("verbo");
         String ids=request.getParameter("idCita");
         System.out.println(ids);
         int idCita = Integer.parseInt(request.getParameter("idCita"));
@@ -118,17 +118,19 @@ UserTransaction utx;
             out.println("<form action='EditarCita' method='post'>");
             out.println("<h1>IdCita:" + idCita+ "</h1>");
             
-            out.println("<h1>IdPaciente:" + paciente+ "</h1>");
+            out.println("<h1>Paciente:" + nombrePaciente+ "</h1>");
             out.println("<input type='hidden' name='paciente' value="+paciente+">");
             out.println("<input type='hidden' name='idCita' value="+idCita+">");
             out.println("<p>Diagnóstico:</p>");
+        
             if(diagnostico==null){    
             out.println("<input type='text' name='diagnostico' size=100>");
             out.println("<input type='submit' value='Guardar'></input>");
             }else{
                 
             out.println("<p>"+diagnostico+"</p>");    
-            out.println("<a href='BuscarPorNombre'>Otra búsqueda</a>");
+            out.println("<a href='VerCitas&nombrePac="+nombrePaciente+"'>Atras</a>");
+            out.println("<a href='index.html'>Inicio</a>");
             }
             
             out.println("</form>");

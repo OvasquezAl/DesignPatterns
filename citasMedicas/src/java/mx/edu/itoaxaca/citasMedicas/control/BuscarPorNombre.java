@@ -74,7 +74,7 @@ private PacientesJpaController cp;
             out.println("<br/>");
             out.println("<input type='submit' id='idPaciente' value='Aceptar' name='aceptar' title='buscar'>");
             out.println("</form>");
-            
+            out.println("<p><a href='index.html'>Inicio</a></p>");
             out.println("</body>");
             out.println("</html>");
         }
