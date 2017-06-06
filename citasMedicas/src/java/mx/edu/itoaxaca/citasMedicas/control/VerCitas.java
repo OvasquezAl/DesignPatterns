@@ -59,18 +59,11 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         emf=Persistence.createEntityManagerFactory("citasMedicasPU");
         
         String nombre=request.getParameter("nombrePac");
-        System.out.println(nombre);
-        
-        
+        //System.out.println(nombre);
         Date hoy=Date.from(Instant.now());
-             
-        
         PacientesJpaController cp=new PacientesJpaController(utx, emf);
         CitasJpaController cc=new CitasJpaController(utx, emf);
-        
        Vector p =(Vector)cp.findPacientesByName(nombre);
-        
-        //
         System.out.println("Consulta hecha");
         System.out.println(p.size());
         System.out.println(p.get(0));
@@ -83,11 +76,11 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
         
         
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
+            
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet VerCitas</title>");            
+            out.println("<title>Ver Citas</title>");            
             out.println("</head>");
             out.println("<body>");
             out.println("<center>");
@@ -98,6 +91,7 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
                     +"<td class='datos'>Hora</td>"
                     +"<td class='datos'>IdPaciente</td>"
                     +"<td class='datos'>Nombre</td>"
+                    +"<td class='datos'>Estatus</td>"
                     +"<td class='datos'>Opciones</td>"
                  +"</tr>"
                  );
@@ -109,32 +103,32 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
                  out.println(
                      "<tr>"
                     + "<td>"+c.getIdcita()+"</td>"
-                    + "<td>"+f.get(Calendar.DAY_OF_MONTH)+"-"+f.get(Calendar.MONTH)+1+"-"+f.get(Calendar.YEAR)+"</td>"
+                    + "<td>"+f.get(Calendar.DAY_OF_MONTH)+"-"+(f.get(Calendar.MONTH)+1)+"-"+f.get(Calendar.YEAR)+"</td>"
                     + "<td>"+c.getHora().getHours()+":00</td>"
                     + "<td>"+c.getPaciente()+"</td>"
-                    + "<td>"+nombre+"</td>");
+                    + "<td>"+nombre+"</td>"
+                    +"<td>"+c.getEstatus()+"</td>");
                     if(c.getEstatus().equals("PENDIENTE")){                                     
                         if(c.getFecha().before(hoy)){
                         out.println("<td>"
-                            + "<a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=diagnosticar\">Diagnosticar</a>"
-                            //+ ", <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=cancelar\">Cancelar</a>"        
-                            //+ " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
+                            + "<a href=\"EditCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=diagnosticar\">Diagnosticar</a>"
+                            + ", <a href=\"EditCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=cancelar\">Cancelar</a>"        
+                            + " o <a href=\"EditCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
                             + "</td>");
                         }else{
                             out.println("<td>"
-                            //+ "<a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=cancelar\">Cancelar</a>"        
-                            //+ " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
+                            + "<a href=\"EditCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=cancelar\">Cancelar</a>"        
+                            + " o <a href=\"EditCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
                             + "</td>");
                         }
                     }       
                     if(c.getEstatus().equals("ATENDIDA")){
-                        out.println("<td><a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&diagnostico=x&verbo=ver\">Ver</a>"
-                        //+ " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
+                        out.println("<td><a href=\"EditCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&diagnostico=x&verbo=ver\">Ver</a>"
+                        + " o <a href=\"EditCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar&verbo=ver\">Borrar</a>"                                  
                         + "</td>");
                     }
                     if(c.getEstatus().equals("CANCELADA")){
-                        out.println("<td><a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&diagnostico=x&verbo=ver\">Ver</a></td>"
-                        //+ " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"\"&verbo=borrar>Borrar</a>"
+                        out.println("<td><a href=\"EditCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"
                         + "</td>");
                     }
                         out.println("</tr>");

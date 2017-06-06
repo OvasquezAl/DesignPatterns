@@ -78,7 +78,7 @@ public class AltaCita extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AltaCita</title>");            
+            out.println("<title>AltaCita</title>");            
             out.println("</head>");
             out.println("<body>");
             //out.print("<h2>Paciente</h2>");
@@ -89,7 +89,7 @@ public class AltaCita extends HttpServlet {
             
             
             
-            out.println("<h1>Servlet AltaCita at " + request.getContextPath() + "</h1>");
+            //out.println("<h1>Servlet AltaCita at " + request.getContextPath() + "</h1>");
           
              try {
                 cc.create(cita);

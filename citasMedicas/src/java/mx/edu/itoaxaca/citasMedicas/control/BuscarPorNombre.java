@@ -58,6 +58,7 @@ private PacientesJpaController cp;
             out.println("<title>Citas Medicas</title>");            
             out.println("</head>");
             out.println("<body>");
+            out.println("<center>");
             out.println("<h2>Seleccion de paciente:</h2>");
             /*out.println("<form id='buscaNombre action=VerCitas' method= 'post'>");
             out.println("<input type='text' name='nombrePac'></input>");
@@ -75,6 +76,7 @@ private PacientesJpaController cp;
             out.println("<input type='submit' id='idPaciente' value='Aceptar' name='aceptar' title='buscar'>");
             out.println("</form>");
             out.println("<p><a href='index.html'>Inicio</a></p>");
+            out.println("</center>");
             out.println("</body>");
             out.println("</html>");
         }
