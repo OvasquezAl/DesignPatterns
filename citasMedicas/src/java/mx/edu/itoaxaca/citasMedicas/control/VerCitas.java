@@ -117,24 +117,24 @@ protected void processRequest(HttpServletRequest request, HttpServletResponse re
                         if(c.getFecha().before(hoy)){
                         out.println("<td>"
                             + "<a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=diagnosticar\">Diagnosticar</a>"
-                            + ", <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=cancelar\">Cancelar</a>"        
-                            + " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
+                            //+ ", <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=cancelar\">Cancelar</a>"        
+                            //+ " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
                             + "</td>");
                         }else{
                             out.println("<td>"
-                            + "<a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=cancelar\">Cancelar</a>"        
-                            + " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
+                            //+ "<a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=cancelar\">Cancelar</a>"        
+                            //+ " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
                             + "</td>");
                         }
                     }       
                     if(c.getEstatus().equals("ATENDIDA")){
                         out.println("<td><a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&diagnostico=x&verbo=ver\">Ver</a>"
-                        + " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
+                        //+ " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&verbo=borrar\">Borrar</a>"                                  
                         + "</td>");
                     }
                     if(c.getEstatus().equals("CANCELADA")){
                         out.println("<td><a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"&diagnostico=x&verbo=ver\">Ver</a></td>"
-                        + " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"\"&verbo=borrar>Borrar</a>"
+                        //+ " o <a href=\"EditarCita?idCita="+c.getIdcita()+"&paciente="+c.getPaciente()+"\"&verbo=borrar>Borrar</a>"
                         + "</td>");
                     }
                         out.println("</tr>");
