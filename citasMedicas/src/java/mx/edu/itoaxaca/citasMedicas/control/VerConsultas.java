@@ -7,6 +7,7 @@ package mx.edu.itoaxaca.citasMedicas.control;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.Vector;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
+import mx.edu.itoaxaca.citasMedicas.modelo.Citas;
 import mx.edu.itoaxaca.citasMedicas.modelo.Consultas;
 import mx.edu.itoaxaca.citasMedicas.modelo.Pacientes;
 
@@ -60,10 +62,10 @@ private ConsultasJpaController con;
             Vector pacientes=(Vector)cp.findPacientesByName(nombre);
             try{
                 paciente= (Pacientes) pacientes.get(0);
-                consultas=(Vector)con.findConsultasByPaciente(paciente.getIdpaciente());
+                consultas=(Vector)con.findconsultasByPacienteFecha(paciente.getIdpaciente());
                 
             }catch(Exception e){
-                System.out.println("No se encontró ningun paciente: "+ e);
+                System.out.println("No se encontró ningun paciente: .... o la consulta anda mal"+ e);
             }
             
         }
@@ -88,14 +90,17 @@ private ConsultasJpaController con;
             out.println("<input type='submit' value='Buscar'>");
             out.println("</form>");
             out.println("<p></p><p></p>");
+            if(nombre!=null)out.println("<p>"+nombre+"</p>");
             if(consultas.size()>0 ){
+                
                 out.println("<table border=1>");
-                out.println("<tr><td>Paciente</td><td>Cita</td><td>Consulta</td><td>Diagnostico</td></tr>");
+                out.println("<tr><td>Fecha</td><td>Diagnostico</td></tr>");
+                
                 for(int i=0; i<consultas.size();i++){
                     Consultas consulta =(Consultas)consultas.get(i);
-                    out.println("<tr><td>"+paciente.getNombre()+"</td>"
-                            +"<td>"+consulta.getIdcita()+"</td>"
-                            + "<td>"+consulta.getIdconsulta()+"</td>"
+                    Citas cita=cc.findCitas(consulta.getIdcita());
+                    Calendar cal=ListaPacientes.dtc(cita.getFecha());
+                    out.println("<tr><td>"+cal.get(Calendar.DAY_OF_MONTH)+"-"+cal.get(Calendar.MONTH)+"-"+cal.get(Calendar.YEAR)+"</td>"
                             +"<td>"+consulta.getDiagnostico()+"</td></tr>");   
                 }
                 out.println("</table>");

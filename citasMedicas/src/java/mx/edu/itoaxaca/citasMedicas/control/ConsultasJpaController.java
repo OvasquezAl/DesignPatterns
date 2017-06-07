@@ -167,6 +167,7 @@ public class ConsultasJpaController implements Serializable {
             em.close();
         }
     }
+    
       
       
     
@@ -183,4 +184,19 @@ public class ConsultasJpaController implements Serializable {
         }
     }
     
+    public List findconsultasByPacienteFecha(Integer idPaciente) {
+        EntityManager em = getEntityManager();
+        try {
+           return em.createQuery(
+                    "SELECT c FROM Consultas c WHERE c.idpaciente = :idpaciente")//incluir fecha y order by
+                    .setParameter("idpaciente", idPaciente)
+                    .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    
 }
+
+
